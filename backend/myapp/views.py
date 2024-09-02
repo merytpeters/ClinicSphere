@@ -14,9 +14,22 @@ class HomePageView(View):
     def get(self, request):
         return HttpResponse("Welcome to homepage")
 
+
+class DepartmentsViewSet(viewsets.ModelViewSet):
+    queryset = Departments.objects.all()
+    serializer_class = DepartmentSerializer
+
+class EmployeesViewSet(viewsets.ModelViewSet):
+    queryset = Employees.objects.all()
+    serializer_class = EmployeeSerializer
+
 class SignupViewSet(viewsets.ModelViewSet):
     serializer_class = SignupSerializer
     queryset = Signup.objects.all()
+
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
 
 
 class LoginView(APIView):
@@ -36,6 +49,11 @@ class LoginView(APIView):
             return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
         else:
             return Response({"error": "Invalid Credentials"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PatientViewSet(viewsets.ModelViewSet):
+    serializer_class = PatientSerializer
+    queryset = Patient.objects.all()
 
 
 class PatientFolderViewSet(viewsets.ModelViewSet):
