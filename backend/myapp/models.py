@@ -117,23 +117,20 @@ class Patient(models.Model):
 
 
 # Patient Portal User
-class User(models.Model):
+class UserProfile(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.SET_NULL,
         null=True,
         blank=True
     )
-    is_patient = models.BoleanField(default=True)
+    is_patient = models.BooleanField(default=True)
     profile_picture = models.ImageField(null=True, blank=True)
-    phone_number = models.CharField()
-    address = models.TextField()
+    phone_number = models.CharField(max_length=20, null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
 
-    def get_full_name(self):
-        pass
-
-    def get_contact_info(self):
-        pass
+    def __str__(self):
+        return self.user.username
     
 
 class PatientFolder(models.Model):
@@ -160,7 +157,7 @@ class Medication(models.Model):
 
 class Prescription(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    medical staff = models.ForeignKey(Employees, on_delete=models.SET_NULL)
+    medical_staff = models.ForeignKey(Employees, on_delete=models.SET_NULL)
     medications =models.ManyToManyField(Medication, )
 
     def validate_prescription(self):
@@ -179,7 +176,7 @@ class Order(models.Model):
             'cancelled',
         ]
     )
-    order_date = models.DateTime(auto_add_now=True)
+    order_date = models.DateTimeField(auto_add_now=True)
     total_cost = models
 
     def process_order(self):
@@ -190,7 +187,7 @@ class Order(models.Model):
 
 
 class Appointment(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=CASCADE)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     doctor = models.ForeignKey(Employees, filtered_by_title=DOCTOR)
     appointment_date = models.DateField()
     status = models.CharField(
@@ -202,13 +199,13 @@ class Appointment(models.Model):
         ]
     )
 
-    def scheduled_appointment(self):
+    def schedule_appointment(self):
         pass
 
-    def resheduled_appointment(self):
+    def reshedule_appointment(self):
         pass
 
-    def cancelled_appointment(self):
+    def cancel_appointment(self):
         pass
 
     def completed_appointment(self):
