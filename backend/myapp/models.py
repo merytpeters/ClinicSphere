@@ -124,3 +124,49 @@ class PatientFolder(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Medication(models.Model):
+    name = models.CharField(max_length=100)
+    dosage = models.IntegerField()
+    quantity_in_stock = models.IntegerField()
+
+    def check_availability(self):
+        pass
+
+    def reduce_stock(self):
+        pass
+
+
+class Prescription(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    medical staff = models.ForeignKey(Employees, on_delete=models.SET_NULL)
+    medications =models.ManyToManyField(Medication, )
+
+    def validate_prescription(self):
+        pass
+
+    def calculate_total_cost(self):
+        pass
+
+class Order(models.Model):
+    prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=50,
+        choices=[
+            'pending',
+            'completed',
+            'cancelled',
+        ]
+    )
+    order_date = models.DateTime(auto_add_now=True)
+    total_cost = models
+
+    def process_order(self):
+        pass
+
+    def update_status(self):
+        pass
+
+
+    
