@@ -169,4 +169,27 @@ class Order(models.Model):
         pass
 
 
-    
+class Appointment(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=CASCADE)
+    doctor = models.ForeignKey(Employees, filtered_by_title=DOCTOR)
+    appointment_date = models.DateField()
+    status = models.CharField(
+        max_length=50,
+        choices=[
+            'scheduled',
+            'completed',
+            'cancelled',
+        ]
+    )
+
+    def scheduled_appointment(self):
+        pass
+
+    def resheduled_appointment(self):
+        pass
+
+    def cancelled_appointment(self):
+        pass
+
+    def completed_appointment(self):
+        pass
