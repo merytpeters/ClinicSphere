@@ -23,6 +23,13 @@ class LoginView(APIView):
     def post(self, request):
         identifier = request.data.get('username_or_email')
         password = request.data.get('password')
+        
+        try:
+            user_obj = User.objects.get(email=identifier)
+            username = user_obj.username
+        except User.DoesNotExist:
+            username = identifier
+
         user = authenticate(request, username=identifier, password=password)
         if user is not None:
             login(request, user)
