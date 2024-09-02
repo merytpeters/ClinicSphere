@@ -47,7 +47,7 @@ class Employees(models.Model):
 class Signup(models.Model):
     email = models.EmailField(max_length=50, unique=True)
     username = models.CharField(max_length=20, unique=True)
-    password = (models.CharField(max_length=128))
+    password = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
@@ -89,7 +89,7 @@ class Patient(models.Model):
         blank=True
     )
     first_name = models.CharField(max_length=50)
-    middle_name = models.CharField(max_length=50)
+    middle_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50)
     date_of_birth = models.DateField()
     gender = models.CharField(
@@ -117,6 +117,7 @@ class Patient(models.Model):
 
 
 class PatientFolder(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     age = models.IntegerField()
     medicalhistory = models.TextField()
