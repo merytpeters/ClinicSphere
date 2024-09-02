@@ -11,5 +11,3 @@ urlpatterns = [
     path('api/login/', LoginView.as_view(), name='login'),
     path(r'', include(router.urls)),
 ]
-
-urlpatterns += router.urls
