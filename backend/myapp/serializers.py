@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.exceptions import ValidationError
-from myapp.models import Departments, Employees, Patient, Signup, Login
+from myapp.models import Departments, Employees, Patient, Signup
 from rest_framework import serializers
 
 

@@ -1,9 +1,8 @@
-from django.db import models
-from django.utils.translation import gettext_lazy as _
-from django.utils import timezone
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password, check_password
-
+from django.db import models
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 class Departments(models.Model):
@@ -60,7 +59,7 @@ class Signup(models.Model):
         return self.username
 
 
-class Login(models.Model):
+""" class Login(models.Model):
     email = models.EmailField(max_length=50)
     username = models.CharField(max_length=20)
     password = models.CharField(max_length=128)
@@ -79,7 +78,7 @@ class Login(models.Model):
                 return False
         except Signup.DoesNotExist:
             print(f"Acount {self.email} or {self.username} does not exist")
-            return False
+            return False"""
 
 
 class Patient(models.Model):
