@@ -116,6 +116,26 @@ class Patient(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
+# Patient Portal User
+class User(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    is_patient = models.BoleanField(default=True)
+    profile_picture = models.ImageField(null=True, blank=True)
+    phone_number = models.CharField()
+    address = models.TextField()
+
+    def get_full_name(self):
+        pass
+
+    def get_contact_info(self):
+        pass
+    
+
 class PatientFolder(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
