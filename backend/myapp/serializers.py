@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.exceptions import ValidationError
-from myapp.models import Departments, Employees, Patient, Signup
+from myapp.models import Departments, Employees, Patient, Signup, PatientFolder
 from rest_framework import serializers
 
 
@@ -80,3 +80,9 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         Patient.objects.create(user=user, **patient_data)
         return user
+
+
+class PatientFolderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PatientFolder
+        fields ='__all__'
