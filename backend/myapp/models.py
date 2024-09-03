@@ -4,6 +4,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+
 # Create your models here.
 class Departments(models.Model):
     DepartmentName = models.CharField(max_length=100)
@@ -36,7 +37,7 @@ class Employees(models.Model):
         OTHERS = "OT", _("Other Staff")
     Employees_Title = models.CharField(
         max_length=15,
-        choices=EmployeesTitle,
+        choices=EmployeesTitle.choices,
         default=EmployeesTitle.DOCTOR,
     )
 
@@ -131,7 +132,7 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
-    
+
 
 class PatientFolder(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
@@ -157,8 +158,12 @@ class Medication(models.Model):
 
 class Prescription(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    medical_staff = models.ForeignKey(Employees, on_delete=models.SET_NULL)
-    medications =models.ManyToManyField(Medication, )
+    medical_staff = models.ForeignKey(
+        Employees,
+        on_delete=models.SET_NULL,
+        null=True
+    )
+    medications = models.ManyToManyField(Medication, )
 
     def validate_prescription(self):
         pass
@@ -166,18 +171,23 @@ class Prescription(models.Model):
     def calculate_total_cost(self):
         pass
 
+
+class StatusChoices(models.TextChoices):
+    PENDING = 'PEN', _('pending')
+    CONFIRMED = 'CON', _('confirmed')
+    CANCELLED = 'CANCEL', _('cancelled')
+    COMPLETED = 'COM', _('completed')
+
+
 class Order(models.Model):
     prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE)
     status = models.CharField(
-        max_length=50,
-        choices=[
-            'pending',
-            'completed',
-            'cancelled',
-        ]
+            max_length=10,
+            choices=StatusChoices.choices,
+            default=StatusChoices.PENDING,
     )
-    order_date = models.DateTimeField(auto_add_now=True)
-    total_cost = models
+    order_date = models.DateTimeField(auto_now_add=True)
+    total_cost = models.FloatField()
 
     def process_order(self):
         pass
@@ -188,15 +198,22 @@ class Order(models.Model):
 
 class Appointment(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    doctor = models.ForeignKey(Employees, filtered_by_title=DOCTOR)
+    doctor = models.ForeignKey(
+        'Employees',
+        on_delete=models.SET_NULL,
+        null=True,
+        limit_choices_to={
+            'title': [
+                'DR',
+                'CT',
+            ]
+        }
+    )
     appointment_date = models.DateField()
     status = models.CharField(
-        max_length=50,
-        choices=[
-            'scheduled',
-            'completed',
-            'cancelled',
-        ]
+            max_length=10,
+            choices=StatusChoices.choices,
+            default=StatusChoices.PENDING,
     )
 
     def schedule_appointment(self):
