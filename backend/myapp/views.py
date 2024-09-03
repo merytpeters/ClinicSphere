@@ -9,6 +9,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+
 # Create your views here.
 class HomePageView(View):
     def get(self, request):
@@ -19,13 +20,16 @@ class DepartmentsViewSet(viewsets.ModelViewSet):
     queryset = Departments.objects.all()
     serializer_class = DepartmentSerializer
 
+
 class EmployeesViewSet(viewsets.ModelViewSet):
     queryset = Employees.objects.all()
     serializer_class = EmployeeSerializer
 
+
 class SignupViewSet(viewsets.ModelViewSet):
     serializer_class = SignupSerializer
     queryset = Signup.objects.all()
+
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
@@ -36,7 +40,7 @@ class LoginView(APIView):
     def post(self, request):
         identifier = request.data.get('username_or_email')
         password = request.data.get('password')
-        
+
         try:
             user_obj = User.objects.get(email=identifier)
             username = user_obj.username
@@ -46,9 +50,15 @@ class LoginView(APIView):
         user = authenticate(request, username=identifier, password=password)
         if user is not None:
             login(request, user)
-            return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+            return Response(
+                {"message": "Login successful"},
+                status=status.HTTP_200_OK
+            )
         else:
-            return Response({"error": "Invalid Credentials"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Invalid Credentials"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class PatientViewSet(viewsets.ModelViewSet):
@@ -59,4 +69,3 @@ class PatientViewSet(viewsets.ModelViewSet):
 class PatientFolderViewSet(viewsets.ModelViewSet):
     seralizer_class = PatientFolderSerializer
     queryset = PatientFolder.objects.all()
-    

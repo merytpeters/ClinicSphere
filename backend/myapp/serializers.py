@@ -85,4 +85,4 @@ class UserSerializer(serializers.ModelSerializer):
 class PatientFolderSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientFolder
-        fields ='__all__'
+        fields = '__all__'
