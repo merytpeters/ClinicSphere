@@ -6,6 +6,7 @@ from django.views import View
 from myapp.models import *
 from myapp.serializers import *
 from rest_framework import viewsets, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -29,6 +30,7 @@ class EmployeesViewSet(viewsets.ModelViewSet):
 class SignupViewSet(viewsets.ModelViewSet):
     serializer_class = SignupSerializer
     queryset = Signup.objects.all()
+    permission_classes = [IsAuthenticated]
 
 
 class UserViewSet(viewsets.ModelViewSet):
