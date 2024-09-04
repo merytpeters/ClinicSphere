@@ -1,9 +1,8 @@
-import './App.css'
 import { BrowserRouter as Router, Route, Switch } from react-router-dom
-import HomePage from './HomePage';
-import Login from './Login';
+import Dashboard from './components/Dashboard';
+import Login from './components/Login';
+import ProtectedRoute from './components/ProtectedRoute';
 import React from 'react';
-import Signup from './Signup';
 
 function App() {
   return (
@@ -14,9 +13,15 @@ function App() {
         </header>
         <main>
           <Switch>
-            <Route path="/" exact component={HomePage} />
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={Signup} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
          </Switch>
        </main>
       </div>
