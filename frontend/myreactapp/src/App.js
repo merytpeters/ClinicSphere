@@ -1,8 +1,8 @@
-import { BrowserRouter as Router, Route, Switch } from react-router-dom
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
-import React from 'react';
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
           <h1> CLINICSPHERE </h1>
         </header>
         <main>
-          <Switch>
+          <Routes>
             <Route path="/login" element={<Login />} />
             <Route
               path="/dashboard"
@@ -22,7 +22,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-         </Switch>
+         </Routes>
        </main>
       </div>
     </Router>
