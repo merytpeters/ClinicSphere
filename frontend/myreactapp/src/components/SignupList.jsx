@@ -20,11 +20,10 @@ const SignupList = () => {
 
     return (
         <div>
-            <h2>Signup List</h2>
-            {error && <p>{error}</p>}
+            <h1>Signup List</h1>
             <ul>
-                {signupData.map((item) => (
-                    <li key={item.id}>{item.someField}</li>
+                {signupData.map((signup, index) => (
+                    <li key={index}>{signup.name}</li>
                 ))}
             </ul>
         </div>
