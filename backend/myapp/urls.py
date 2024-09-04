@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 
 
 router = DefaultRouter()
-router.register(r'signup', SignupViewSet)
+router.register(r'signup', SignupViewSet, basename='signup')
 
 urlpatterns = [
     path('', HomePageView.as_view(), name='Homepage'),
