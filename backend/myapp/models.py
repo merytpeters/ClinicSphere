@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 class Departments(models.Model):
+    """Department that the employees belong to"""
     DepartmentName = models.CharField(max_length=100)
 
     def __str__(self):
@@ -14,12 +15,20 @@ class Departments(models.Model):
 
 
 class Employees(models.Model):
+    """Employees that will have signup and login access
+      to patient data and adding new records"""
+    user = models.OneToOneField(User,
+                                on_delete=models.CASCADE,
+                                null=True,
+                                blank=True,
+                                related_name='employee_profile')
     EmployeeName = models.CharField(max_length=100)
     Department = models.ForeignKey(
         Departments,
         on_delete=models.SET_NULL,
         null=True,
-        blank=True
+        blank=True,
+        related_name='employee_profile'
     )
     DateEmployed = models.DateField()
 
@@ -35,6 +44,7 @@ class Employees(models.Model):
         RECEPTIONIST = "Recept", _("Receptionist")
         OTHER_CLINICAL_STAFF = "CS", _("Clinical Staff")
         OTHERS = "OT", _("Other Staff")
+
     Employees_Title = models.CharField(
         max_length=15,
         choices=EmployeesTitle.choices,
@@ -46,6 +56,7 @@ class Employees(models.Model):
 
 
 class Signup(models.Model):
+    """Signup for employees"""
     email = models.EmailField(max_length=50, unique=True)
     username = models.CharField(max_length=20, unique=True)
     password = models.CharField(max_length=128)
@@ -83,6 +94,7 @@ class Signup(models.Model):
 
 
 class Patient(models.Model):
+    """Patient Registration Form"""
     user = models.OneToOneField(
         User,
         on_delete=models.SET_NULL,
@@ -119,6 +131,8 @@ class Patient(models.Model):
 
 # Patient Portal User
 class UserProfile(models.Model):
+    """Individual user profiles of patient to access
+      their own record withh read only access"""
     user = models.OneToOneField(
         User,
         on_delete=models.SET_NULL,
@@ -135,6 +149,7 @@ class UserProfile(models.Model):
 
 
 class PatientFolder(models.Model):
+    """Patient Folder for storing and view all medical history"""
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     age = models.IntegerField()
@@ -145,6 +160,7 @@ class PatientFolder(models.Model):
 
 
 class Medication(models.Model):
+    """Medication class"""
     name = models.CharField(max_length=100)
     dosage = models.IntegerField()
     quantity_in_stock = models.IntegerField()
@@ -157,6 +173,7 @@ class Medication(models.Model):
 
 
 class Prescription(models.Model):
+    """Prescription Class"""
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     medical_staff = models.ForeignKey(
         Employees,
@@ -180,6 +197,7 @@ class StatusChoices(models.TextChoices):
 
 
 class Order(models.Model):
+    """Med Order"""
     prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE)
     status = models.CharField(
             max_length=10,

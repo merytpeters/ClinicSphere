@@ -9,7 +9,7 @@ class UsernameOrEmailBackend(ModelBackend):
         UserModel = get_user_model()
         if username is None:
             return None
-        
+
         try:
             if '@' in username:
                 user = UserModel.objects.get(email=username)
@@ -17,7 +17,7 @@ class UsernameOrEmailBackend(ModelBackend):
                 user = UserModel.objects.get(username=username)
         except UserModel.DoesNotExist:
             return None
-        
+
         if user.check_password(password):
             return user
         return None
