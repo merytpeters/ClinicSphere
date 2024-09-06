@@ -1,22 +1,48 @@
 from django.contrib.auth.models import User
-from django.contrib.auth.hashers import make_password, check_password
-from django.core.exceptions import ValidationError
-from myapp.models import Departments, Employees, Patient, Signup, PatientFolder
+from django.contrib.auth.hashers import make_password
+from myapp.models import *
 from rest_framework import serializers
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Departments
-        fileds = ('DepartmentName')
+        fields = ('DepartmentName')
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """Serializer for creating a User along with an Employee"""
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password')
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    """Serializer for creating an employee, including User creation"""
+    user = UserSerializer()
+
     class Meta:
         model = Employees
-        fields = ('EmployeeName',
+        fields = ('user',
+                  'EmployeeName',
                   'Department',
-                  'DateEmployed')
+                  'DateEmployed',
+                  'Employees_Title')
+
+    def create(self, validated_data):
+        # Extract user data from validated data
+        user_data = validated_data.pop('user')
+        # Create user instance
+        user = User.objects.create_user(
+            username=user_data['username'],
+            email=user_data['email'],
+            password=user_data['password']
+        )
+        # Create employee instance
+        employee = Employees.objects.create(user, **validated_data)
+        return employee
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -68,17 +94,17 @@ class PatientSerializer(serializers.ModelSerializer):
             return data
 
 
-class UserSerializer(serializers.ModelSerializer):
-    patient = PatientSerializer()
-
+class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['username', 'password', 'patient']
+        model = UserProfile
+        fields = ['user',
+                  'is_patient',
+                  'profile_picture',
+                  'phone_number',
+                  'address']
 
     def create(self, validated_data):
-        patient_data = validated_data.pop('patient')
         user = User.objects.create_user(**validated_data)
-        Patient.objects.create(user=user, **patient_data)
         return user
 
 
