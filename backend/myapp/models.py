@@ -23,7 +23,14 @@ class Employees(models.Model):
                                 null=True,
                                 blank=True,
                                 related_name='employee_profile')
-    EmployeeName = models.CharField(max_length=100)
+    username = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    password = set_unusable
+    is_staff = True
+    is_active = False
+    last_login = DateTimeField
     Department = models.ForeignKey(
         Departments,
         on_delete=models.SET_NULL,
