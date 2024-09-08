@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myapp',
+    'patientportal',
     'rest_framework',
 ]
 
@@ -126,6 +127,7 @@ AUTHENTICATION_BACKENDS = [
     'myapp.authen.UsernameOrEmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
