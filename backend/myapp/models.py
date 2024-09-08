@@ -27,7 +27,7 @@ class Employees(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
-    password = set_unusable
+    password = set_unusable_password()
     is_staff = True
     is_active = False
     last_login = DateTimeField
@@ -58,6 +58,12 @@ class Employees(models.Model):
         choices=EmployeesTitle.choices,
         default=EmployeesTitle.DOCTOR,
     )
+
+    def get_full_name(self):
+        pass
+
+    def get_short_name(self):
+        pass
 
     def __str__(self):
         return self.EmployeeName
