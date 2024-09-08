@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.hashers import make_password
+from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -12,7 +13,7 @@ class Departments(models.Model):
 
     def __str__(self):
         return self.DepartmentName
-
+    
 
 class Employees(models.Model):
     """Employees that will have signup and login access
@@ -55,6 +56,38 @@ class Employees(models.Model):
         return self.EmployeeName
 
 
+# Patient Portal User
+class Patient(models.Model):
+    """Patient Registration Form"""
+    first_name = models.CharField(max_length=50)
+    middle_name = models.CharField(max_length=50, null=True, blank=True)
+    last_name = models.CharField(max_length=50)
+    date_of_birth = models.DateField()
+    gender = models.CharField(
+        max_length=10,
+        choices=[
+            ('F', 'Female'),
+            ('M', 'Male'),
+            ('O', 'Other')
+        ]
+    )
+    address = models.TextField()
+    phone_number = models.CharField(max_length=20)
+    email = models.EmailField(unique=True)
+    medical_record_number = models.IntegerField(primary_key=True, unique=True)
+    date_registered = models.DateTimeField(auto_now_add=True)
+    changed_at = models.DateTimeField(auto_now=True)
+
+    # Optional fields
+    weight = models.FloatField(null=True, blank=True)
+    height = models.FloatField(null=True, blank=True)
+    blood_type = models.CharField(max_length=10, null=True, blank=True)
+    genotype = models.CharField(max_length=10, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+    
 class Signup(models.Model):
     """Signup for employees"""
     email = models.EmailField(max_length=50, unique=True)
@@ -71,106 +104,27 @@ class Signup(models.Model):
         return self.username
 
 
-""" class Login(models.Model):
-    email = models.EmailField(max_length=50)
-    username = models.CharField(max_length=20)
-    password = models.CharField(max_length=128)
-
-    def account_exist(self):
-        try:
-            # Check if account exists
-            user = Signup.objects.get(
-                email=self.email,
-                username=self.username
-            )
-            # Verify that the password is correct
-            if check_password(self.password, user.password):
-                return True
-            else:
-                return False
-        except Signup.DoesNotExist:
-            print(f"Acount {self.email} or {self.username} does not exist")
-            return False"""
-
-
-class Patient(models.Model):
-    """Patient Registration Form"""
-    user = models.OneToOneField(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
-    first_name = models.CharField(max_length=50)
-    middle_name = models.CharField(max_length=50, null=True, blank=True)
-    last_name = models.CharField(max_length=50)
-    date_of_birth = models.DateField()
-    gender = models.CharField(
-        max_length=10,
-        choices=[
-            ('F', 'Female'),
-            ('M', 'Male'),
-            ('O', 'Other')
-        ]
-    )
-    address = models.TextField()
-    phone_number = models.CharField(max_length=20)
-    email = models.EmailField(unique=True)
-    medical_record_number = models.CharField(max_length=100, unique=True)
-    date_registered = models.DateTimeField(default=timezone.now)
-
-    # Optional fields
-    weight = models.FloatField(null=True, blank=True)
-    height = models.FloatField(null=True, blank=True)
-    blood_type = models.CharField(max_length=10, null=True, blank=True)
-    genotype = models.CharField(max_length=10, null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}"
-
-
-# Patient Portal User
-class UserProfile(models.Model):
-    """Individual user profiles of patient to access
-      their own record withh read only access"""
-    user = models.OneToOneField(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
-    is_patient = models.BooleanField(default=True)
-    profile_picture = models.ImageField(null=True, blank=True)
-    phone_number = models.CharField(max_length=20, null=True, blank=True)
-    address = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return self.user.username
-
-
-class PatientFolder(models.Model):
-    """Patient Folder for storing and view all medical history"""
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    age = models.IntegerField()
-    medicalhistory = models.TextField()
-
-    def __str__(self):
-        return self.name
-
-
 class Medication(models.Model):
     """Medication class"""
-    name = models.CharField(max_length=100)
-    dosage = models.IntegerField()
+    name = models.TextField(max_length=100)
+    type = models.CharField(
+        max_length=50,
+        choices=[
+            ('Brand', 'Brand Name'),
+            ('Generic', 'Generic Name')
+        ]
+    )
     quantity_in_stock = models.IntegerField()
 
     def check_availability(self):
-        pass
+        """if self.quantity_in_stock != 0:
+            self.name"""
 
     def reduce_stock(self):
         pass
 
+    def __str__(self):
+        return self.name
 
 class Prescription(models.Model):
     """Prescription Class"""
@@ -180,7 +134,12 @@ class Prescription(models.Model):
         on_delete=models.SET_NULL,
         null=True
     )
-    medications = models.ManyToManyField(Medication, )
+    medications = models.ManyToManyField(Medication)
+    dosage = models.IntegerField()
+
+    def __str__(self):
+        medications_list = ', '.join([med.name for med in self.medications.all()])
+        return f"Patient: {self.patient}, Medications: {medications_list}, Dosage: {self.dosage}"
 
     def validate_prescription(self):
         pass
