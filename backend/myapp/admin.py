@@ -4,10 +4,8 @@ from .models import *
 
 admin.site.register(Departments)
 admin.site.register(Employees)
-admin.site.register(Signup)
 admin.site.register(Patient)
-admin.site.register(UserProfile)
-admin.site.register(PatientFolder)
+admin.site.register(Signup)
 admin.site.register(Medication)
 admin.site.register(Order)
 admin.site.register(Appointment)

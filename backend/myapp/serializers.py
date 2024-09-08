@@ -93,22 +93,3 @@ class PatientSerializer(serializers.ModelSerializer):
                     )
             return data
 
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserProfile
-        fields = ['user',
-                  'is_patient',
-                  'profile_picture',
-                  'phone_number',
-                  'address']
-
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
-
-
-class PatientFolderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PatientFolder
-        fields = '__all__'
