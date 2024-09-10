@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'signup', SignupViewSet, basename='signup')
-router.register(r'departments', DepartmentsViewSet)
+router.register(r'departments', DepartmentsViewSet, basename='department')
 router.register(r'patients', PatientViewSet)
 # router.register(r'patientfolders', PatientFolderViewSet)
 # router.register(r'patientprofiles', UserProfileViewSet)
