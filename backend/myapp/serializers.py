@@ -27,6 +27,9 @@ class EmployeeSerializer(serializers.ModelSerializer):
         model = Employees
         fields = ('user',
                   'EmployeeName',
+                  'is_staff',
+                  'is_active',
+                  'last_login',
                   'Department',
                   'DateEmployed',
                   'Employees_Title')

@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from myapp.models import *
 from myapp.serializers import *
 from myapp.permissions import *
