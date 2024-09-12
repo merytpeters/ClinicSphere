@@ -1,9 +1,12 @@
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.core.files.storage import default_storage
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+import os
 
 
 # Create your models here.
@@ -13,7 +16,7 @@ class Departments(models.Model):
 
     def __str__(self):
         return self.DepartmentName
-    
+
 
 class Employees(models.Model):
     """Employees that will have signup and login access
@@ -67,6 +70,7 @@ class Employees(models.Model):
 # Patient Portal User
 class Patient(models.Model):
     """Patient Registration Form"""
+    username = models.CharField(max_length=191, null=True, blank=True)
     first_name = models.CharField(max_length=50)
     middle_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50)
@@ -82,7 +86,7 @@ class Patient(models.Model):
     address = models.TextField()
     phone_number = models.CharField(max_length=20)
     email = models.EmailField(unique=True)
-    medical_record_number = models.IntegerField(primary_key=True, unique=True)
+    patient_id = models.AutoField(primary_key=True, unique=True)
     date_registered = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
 
@@ -91,11 +95,47 @@ class Patient(models.Model):
     height = models.FloatField(null=True, blank=True)
     blood_type = models.CharField(max_length=10, null=True, blank=True)
     genotype = models.CharField(max_length=10, null=True, blank=True)
+    folder = models.CharField(max_length=255, editable=False, null=True)
+
+    def save(self, *args, **kwargs):
+        """Overide save to create patient folder if not exists"""
+        if not self.folder:
+            self.folder = self.create_patient_folder()
+
+        super(Patient, self).save(*args, **kwargs)
+
+    def create_patient_folder(self):
+        """Creating Patient Folder"""
+        folder_path = os.path.join('patient', str(self.patient_id))
+
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+    def add_observation(self, SOAP):
+        """Creating Soap Notes/Observations"""
+        observation_file = os.path.join(self.folder, 'SOAP.txt')
+        with open(observation_file, 'a') as file:
+            timestamp = datetime.now().strftime('%d/%m/%Y, %H:%M:%S')
+            file.write(f"SOAP: {SOAP} - {timestamp}\n")
+
+    def add_history(self, history):
+        """Patient History"""
+        history_file = os.path.join(self.folder, 'patientHistory.txt')
+        with open(history_file, 'a') as file:
+            timestamp = datetime.now().strftime('%d/%m/%Y, %H:%M:%S')
+            file.write(f"History: {history} - {timestamp}\n")
+
+    def list_patient_folder(patient_id):
+        folder_path = os.path.join('patients', str(patient_id))
+        if default_storage.exists(folder_path):
+            files = default_storage.listdir(folder_path)[1]
+            return files
+        return []
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"(ID: {self.patient_id}) {self.first_name} {self.last_name}"
 
-    
+
 class Signup(models.Model):
     """Signup for employees"""
     email = models.EmailField(max_length=50, unique=True)
@@ -123,16 +163,18 @@ class Medication(models.Model):
         ]
     )
     quantity_in_stock = models.IntegerField()
+    price = models.FloatField()
 
-    def check_availability(self):
-        """if self.quantity_in_stock != 0:
-            self.name"""
-
-    def reduce_stock(self):
-        pass
+    def reduce_stock(self, quantity):
+        if self.quantity_in_stock >= quantity:
+            self.quantity_in_stock -= quantity
+            self.save()
+            return True
+        return False
 
     def __str__(self):
         return self.name
+
 
 class Prescription(models.Model):
     """Prescription Class"""
@@ -146,14 +188,38 @@ class Prescription(models.Model):
     dosage = models.IntegerField()
 
     def __str__(self):
-        medications_list = ', '.join([med.name for med in self.medications.all()])
-        return f"Patient: {self.patient}, Medications: {medications_list}, Dosage: {self.dosage}"
+        medications_list = ', '.join(
+            [med.name for med in self.medications.all()]
+            )
+        return f"Patient: {self.patient}, Medications: {medications_list},\
+        Dosage: {self.dosage}"
 
     def validate_prescription(self):
-        pass
+        if self.dosage <= 0:
+            raise ValueError("Invalid dosage")
+        if not self.medications.exists:
+            """Check that the prescription contains meds"""
+            raise ValueError("Enter at least one medication")
 
-    def calculate_total_cost(self):
-        pass
+    def get_medication_quantity_ordered(self, medication):
+        """Quantity of each medication prescribed"""
+        try:
+            prescription_medication = PrescriptionMedication.objects.get(
+                prescription=self,
+                medication=medication
+            )
+            return prescription_medication.quantity
+        except PrescriptionMedication.DoesNotExist:
+            return 0
+
+
+class PrescriptionMedication(models.Model):
+    prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE)
+    medication = models.ForeignKey(Medication, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+
+    class Meta:
+        unique_together = ('prescription', 'medication')
 
 
 class StatusChoices(models.TextChoices):
@@ -174,11 +240,48 @@ class Order(models.Model):
     order_date = models.DateTimeField(auto_now_add=True)
     total_cost = models.FloatField()
 
+    def check_availability(self):
+        unavailable_medications = []
+        for medication in self.prescription.medications.all():
+            if medication.quantity_in_stock <= 0:
+                unavailable_medications.append(medication.name)
+
+        if unavailable_medications:
+            return f"The following medication(s) are not in stock:\
+                {', '.join(unavailable_medications)}"
+        return f"{medication.name} for {self.prescription} is available"
+
+    def calculate_total_cost(self):
+        total_cost = 0
+        for medication in self.prescription.medications.all():
+            quantity = self.prescription.get_medication_quantity_ordered(medication)
+            total_cost += medication.price * quantity
+        self.total_cost = total_cost
+        self.save()
+        return total_cost
+
     def process_order(self):
-        pass
+        availability_status = self.check_availability()
+        if "not in stock" in availability_status:
+            raise ValueError(availability_status)
+
+        for medication in self.prescription.medications.all():
+            quantity = self.prescription.get_medication_quantity_ordered(medication)
+            if medication.reduce_stock(quantity):
+                # Handle successful reduction
+                pass
+            else:
+                # Handle failure
+                pass
+
+        self.update_status
 
     def update_status(self):
-        pass
+        if "not in stock" in self.check_availability():
+            self.status = StatusChoices.CANCELLED
+        else:
+            self.status = StatusChoices.CONFIRMED
+        self.save()
 
 
 class Appointment(models.Model):
@@ -202,13 +305,32 @@ class Appointment(models.Model):
     )
 
     def schedule_appointment(self):
-        pass
+        if self.status != StatusChoices.PENDING:
+            raise ValueError("Appointment cannot be scheduled!")
 
-    def reshedule_appointment(self):
-        pass
+        if Appointment.objects.filter(doctor=self.doctor, appointment_date=self.appointment_date).exists():
+            raise ValueError("Doctor is already booked for this date.")
+
+        self.status = StatusChoices.CONFIRMED
+        self.save()
+
+    def reshedule_appointment(self, new_date):
+        if Appointment.objects.filter(doctor=self.doctor, appointment_date=new_date).exists():
+            raise ValueError("Doctor is already booked for this date")
+
+        self.appointment_date = new_date
+        self.status = StatusChoices.PENDING
+        self.save()
 
     def cancel_appointment(self):
-        pass
+        if self.status == StatusChoices.COMPLETED:
+            raise ValueError("Completed appointments cannot be canceled")
+
+        self.status = StatusChoices.CANCELLED
+        self.save()
 
     def completed_appointment(self):
-        pass
+        if self.status != StatusChoices.CONFIRMED:
+            raise ValueError("Only confirmed appointments can be marked as completed")
+        self.status = StatusChoices.COMPLETED
+        self.save()
