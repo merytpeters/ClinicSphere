@@ -13,8 +13,12 @@
   }
 }
 
+.App-body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .App-header {
-  background-color: #3a2416;
+  background-color: #6a4a63;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
