@@ -16,10 +16,3 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-
-
-class PatientFolderViewSet(viewsets.ModelViewSet):
-    serializer_class = PatientFolderSerializer
-    queryset = PatientFolder.objects.all()
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
