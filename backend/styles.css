@@ -1,0 +1,141 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #231717;
+    color: #333;
+}
+
+/* Navigation */
+nav {
+    background-color: #7e6048;
+    padding: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Home Section */
+.home {
+    background: url('emr-background.jpg') no-repeat center center/cover;
+    color: white;
+    padding: 100px 20px;
+    text-align: center;
+}
+
+.home h1 {
+    font-size: 48px;
+}
+
+.home p {
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+.cta-button {
+    background-color: #eab64f;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 30px;
+    text-decoration: none;
+}
+
+.cta-button:hover {
+    background-color: #218838;
+}
+
+/* About Section */
+.about {
+    background-color: white;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.about h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.about p {
+    font-size: 18px;
+    color: #555;
+}
+
+/* Signup Section */
+.signup {
+    background-color: #bdaaaa;
+    padding: 50px 20px;
+    max-width: 600px;
+    margin: 50px auto;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.signup h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.signup form div {
+    margin-bottom: 20px;
+}
+
+.signup label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.signup input, .signup select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.signup button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.signup button:hover {
+    background-color: #0056b3;
+}
+
+/* Footer */
+footer {
+    background-color: #2e2626;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    position: relative;
+}
