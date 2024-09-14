@@ -112,7 +112,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'frontend/myreactapp/build')],
+        'DIRS': [os.path.join(BASE_DIR, 'frontend/myreactapp/public')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -184,6 +184,7 @@ MEDIA_ROOT = [
 ]
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend/myreactapp/build/static')
 ]
