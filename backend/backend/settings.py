@@ -112,7 +112,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'frontend/myreactapp/public')],
+        'DIRS': [os.path.join(BASE_DIR, 'frontend/myreactapp/')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -195,6 +195,6 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000"
+    "http://localhost:5173"
 ]
 CORS_ALLOW_CREDENTIALS = True
