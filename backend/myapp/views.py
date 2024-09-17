@@ -27,7 +27,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
-class DepartmentsViewSet(viewsets.ModelViewSet):
+"""class DepartmentsViewSet(viewsets.ModelViewSet):
     queryset = Departments.objects.all()
     serializer_class = DepartmentSerializer
     authentication_classes = [JWTAuthentication]
@@ -87,5 +87,5 @@ class PatientViewSet(viewsets.ModelViewSet):
     serializer_class = PatientSerializer
     queryset = Patient.objects.all()
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]"""
 
