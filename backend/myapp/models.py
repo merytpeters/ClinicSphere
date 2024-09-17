@@ -10,6 +10,30 @@ import os
 
 
 # Create your models here.
+"""Measurement class for weight, height, blood pressure etc"""
+KG = 'Kg',
+LBS = 'lbs',
+Weight_units = [
+    ('KG', 'Kilogramme'),
+    ('LBS', 'Pounds'),
+]
+M = 'm',
+CM = 'cm',
+FT = 'ft',
+Height_units = [
+    ('M', 'Metre'),
+    ('CM', 'Centimetre'),
+    ('FT', 'Feet'),
+]
+Blood_pressure_units = 'mmHg'
+POSITIVE = '+',
+NEGATIVE = '-',
+Blood_sign = [
+    ('POSITIVE', 'positive'),
+    ('NEGATIVE', 'negative'),
+]
+
+
 class Departments(models.Model):
     """Department that the employees belong to"""
     DepartmentName = models.CharField(max_length=100)
@@ -75,6 +99,7 @@ class Patient(models.Model):
     middle_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50)
     date_of_birth = models.DateField()
+    profile_picture = models.ImageField(null=True, blank=True)
     gender = models.CharField(
         max_length=10,
         choices=[
@@ -92,8 +117,11 @@ class Patient(models.Model):
 
     # Optional fields
     weight = models.FloatField(null=True, blank=True)
+    weight_unit = models.CharField(max_length=10, choices=Weight_units, default='Kg')
     height = models.FloatField(null=True, blank=True)
+    height_unit = models.CharField(max_length=10, choices=Height_units, default='cm')
     blood_type = models.CharField(max_length=10, null=True, blank=True)
+    blood_sign = models.CharField(max_length=10, choices=Blood_sign, default='+')
     genotype = models.CharField(max_length=10, null=True, blank=True)
     folder = models.CharField(max_length=255, editable=False, null=True)
 
