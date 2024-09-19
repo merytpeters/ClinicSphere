@@ -42,8 +42,9 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+    "TOKEN_OBTAIN_SERIALIZER": "myapp.serializers.MyTokenObtainPairSerializer",
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": False,
@@ -57,7 +58,7 @@ SIMPLE_JWT = {
     "JWK_URL": None,
     "LEEWAY": 0,
 
-    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_TYPES": ("JWT",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
@@ -94,6 +95,7 @@ INSTALLED_APPS = [
     'myapp',
     'patientportal',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
@@ -112,7 +114,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'frontend/myreactapp/')],
+        'DIRS': [os.path.join(BASE_DIR, 'frontend', 'myreactapp', 'dist')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -159,7 +161,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Authenticate username or email
 AUTHENTICATION_BACKENDS = [
-    'myapp.authen.UsernameOrEmailBackend',
+    'patientportal.authen.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -183,10 +185,11 @@ MEDIA_ROOT = [
     os.path.join(BASE_DIR, 'media')
 ]
 
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend/myreactapp/build/static')
+    os.path.join(BASE_DIR, "frontend", "myreactapp")
 ]
 
 # Default primary key field type
