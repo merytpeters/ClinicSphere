@@ -2,11 +2,13 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.core.files.storage import default_storage
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 import os
+from rest_framework_simplejwt.tokens import AccessToken
 
 
 # Create your models here.
@@ -51,6 +53,8 @@ class Employees(models.Model):
                                 blank=True,
                                 related_name='employee_profile')
     EmployeeName = models.CharField(max_length=100)
+    username = models.CharField(max_length=50)
+    email = models.EmailField(unique=True, null=True, blank=True)
     is_staff = True
     is_active = False
     Department = models.ForeignKey(
@@ -80,6 +84,19 @@ class Employees(models.Model):
         choices=EmployeesTitle.choices,
         default=EmployeesTitle.DOCTOR,
     )
+
+    @property
+    def is_authenticated(self):
+        try:
+            token = AccessToken(self.token)
+            token.check_exp()
+            return True
+        except (ValidationError, KeyError, AttributeError):
+            return False
+
+    @property
+    def is_anonymous(self):
+        return not self.is_staff
 
     def get_full_name(self):
         pass
@@ -162,22 +179,6 @@ class Patient(models.Model):
 
     def __str__(self):
         return f"(ID: {self.patient_id}) {self.first_name} {self.last_name}"
-
-
-class Signup(models.Model):
-    """Signup for employees"""
-    email = models.EmailField(max_length=50, unique=True)
-    username = models.CharField(max_length=20, unique=True)
-    password = models.CharField(max_length=128)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def save(self, *args, **kwargs):
-        if self.pk is None:
-            self.password = make_password(self.password)
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.username
 
 
 class Medication(models.Model):
