@@ -1,17 +1,10 @@
-from django.urls import path, include
+from django.urls import path
 from myapp.views import *
-from rest_framework.routers import DefaultRouter
-
-
-"""router = DefaultRouter()
-router.register(r'signup', SignupViewSet, basename='signup')
-router.register(r'departments', DepartmentsViewSet, basename='department')
-router.register(r'patients', PatientViewSet)
-# router.register(r'patientfolders', PatientFolderViewSet)
-# router.register(r'patientprofiles', UserProfileViewSet)
+from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
-    path('employees/login/', LoginView.as_view(), name='login'),
-    path('employees/signup/', EmployeesSignupView.as_view(), name='employees-signup'),
-    path(r'', include(router.urls)),
-]"""
+    path('registration/', EmployeeRegistrationAPIView.as_view(), name='register-employee'),
+    path('login/', EmployeeLoginAPIView.as_view(), name='logout-user'),
+    path('logout/', EmployeeLogoutAPIView.as_view(), name='logout-user'),
+    path("token/refresh/", TokenRefreshView.as_view(), name='token'),
+]
