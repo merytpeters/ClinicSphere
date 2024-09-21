@@ -26,6 +26,8 @@ class EmployeeRegistrationSerializer(serializers.ModelSerializer):
             password = attrs.get('password1', '')
             if len(password) < 8:
                 raise serializers.ValidationError('Password must be at least 8 characters!')
+            
+            return attrs
 
         def create(self, validated_data):
         # Extract password data from validated data
@@ -33,7 +35,8 @@ class EmployeeRegistrationSerializer(serializers.ModelSerializer):
             validated_data.pop('password2')
         
         # Create employee instance
-            return Employees.objects.create_user(password=password, **validated_data)
+            user = Employees.objects.create_user(password=password, **validated_data)
+            return user
 
 
 class EmployeeLoginSerializer(serializers.Serializer):
@@ -47,3 +50,44 @@ class EmployeeLoginSerializer(serializers.Serializer):
             return user
         raise serializers.ValidationError('Incorect Login Credentials')
 
+
+class PatientSerializer(serializers.ModelSerializer):
+    """Patient Serializer"""
+    class Meta:
+        model = Patient
+        fields = '__all__'
+
+       
+class MedicationSerializer(serializers.ModelSerializer):
+    """Medication Serializer"""
+    class Meta:
+        model = Medication
+        fields = '__all__'
+
+
+class PrescriptionSerializer(serializers.ModelSerializer):
+    """Prescription Serializer"""
+    class Meta:
+        model = Prescription
+        fields = '__all__'
+
+
+class PrescriptionMedicationSerializer(serializers.ModelSerializer):
+    """Prescription Serializer"""
+    class Meta:
+        model = PrescriptionMedication
+        fields = '__all__'
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    """Prescription Order Serializer"""
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+
+class AppointmentSerializer(serializers.ModelSerializer):
+    """Appointment Serializer"""
+    class Meta:
+        model = Appointment
+        fields = '__all__'
