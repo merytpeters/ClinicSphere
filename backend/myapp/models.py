@@ -9,9 +9,21 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 import os
 from rest_framework_simplejwt.tokens import AccessToken
+import uuid
 
 
 # Create your models here.
+class TemporaryToken(models.Model):
+    """Temporary token for employee to signup"""
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    email = models.EmailField()
+    created_at =models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        """One hour to signup before token expires"""
+        return (timezone.now() - self.created_at).seconds < 3600
+
+
 """Measurement class for weight, height, blood pressure etc"""
 KG = 'Kg',
 LBS = 'lbs',
@@ -320,7 +332,7 @@ class Appointment(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         limit_choices_to={
-            'title': [
+            'Employees_Title': [
                 'DR',
                 'CT',
             ]
