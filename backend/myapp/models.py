@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.core.files.storage import default_storage
@@ -13,16 +13,6 @@ import uuid
 
 
 # Create your models here.
-class TemporaryToken(models.Model):
-    """Temporary token for employee to signup"""
-    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    email = models.EmailField()
-    created_at =models.DateTimeField(auto_now_add=True)
-
-    def is_valid(self):
-        """One hour to signup before token expires"""
-        return (timezone.now() - self.created_at).seconds < 3600
-
 
 """Measurement class for weight, height, blood pressure etc"""
 KG = 'Kg',
@@ -67,8 +57,6 @@ class Employees(models.Model):
     EmployeeName = models.CharField(max_length=100)
     username = models.CharField(max_length=50)
     email = models.EmailField(unique=True, null=True, blank=True)
-    is_staff = True
-    is_active = False
     Department = models.ForeignKey(
         Departments,
         on_delete=models.SET_NULL,
@@ -111,13 +99,42 @@ class Employees(models.Model):
         return not self.is_staff
 
     def get_full_name(self):
-        pass
+        return f"(self.EmployeeName)"
 
     def get_short_name(self):
-        pass
+        return self.username
 
     def __str__(self):
         return self.EmployeeName
+
+
+class TemporaryToken(models.Model):
+    """Temporary token for employee to signup"""
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    email = models.EmailField()
+    created_at =models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+
+    def is_valid(self):
+        """Expires at variable"""
+        return self.expires_at > timezone.now()
+
+    def generate_signup_token(email):
+        token = TemporaryToken.objects.create(
+            email=email,
+            expires_at=timezone.now() + timedelta(hours=1)  # Adjust expiration time as needed
+        )
+        return token.token
+    
+    def validate_signup_token(token):
+        try:
+            signup_token = TemporaryToken.objects.get(token=token)
+            if signup_token.is_valid():
+                return {'valid': True, 'email': signup_token.email}
+            else:
+                return {'valid': False, 'message': 'Token expired.'}
+        except TemporaryToken.DoesNotExist:
+            return {'valid': False, 'message': 'Invalid token.'}
 
 
 # Patient Portal User
