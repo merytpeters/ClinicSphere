@@ -1,5 +1,5 @@
 # CLINICSPHERE: Electronic Medical Record Web Application
-Welcome to *ClincSphere*. Everything you need to get started is right here.
+Welcome to *ClinicSphere*. Everything you need to get started is right here.
 
 ## Introduction:
 This is the MVP of *ClinicSphere*; This repository contains tools, APIs, and resources to help developers and healthcare providers manage and integrate electronic medical records efficiently. The goal is to improve patient care and streamline data management in healthcare settings.
