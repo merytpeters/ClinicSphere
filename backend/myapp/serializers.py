@@ -16,27 +16,41 @@ class EmployeeRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employees
-        fields = ('id', 'username', 'email', 'password1', 'password2')
+        fields = '__all__'
         extra_kwargs = {'password':{'write_only':True}}
 
-        def validate(self, attrs):
-            if attrs['password1'] != attrs['password2']:
-                raise serializers.ValidationError("Passwords do not match")
+    def validate(self, attrs):
+        if attrs['password1'] != attrs['password2']:
+            raise serializers.ValidationError("Passwords do not match")
             
-            password = attrs.get('password1', '')
-            if len(password) < 8:
-                raise serializers.ValidationError('Password must be at least 8 characters!')
+        password = attrs.get('password1', '')
+        if len(password) < 8:
+            raise serializers.ValidationError('Password must be at least 8 characters!')
             
-            return attrs
+        return attrs
 
-        def create(self, validated_data):
-        # Extract password data from validated data
-            password = validated_data.pop('password1')
-            validated_data.pop('password2')
+    def create(self, validated_data):
+    # Extract password data from validated data
+        password = validated_data.pop('password1')
+        validated_data.pop('password2')
         
-        # Create employee instance
-            user = Employees.objects.create_user(password=password, **validated_data)
-            return user
+        # Create user instance
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=password  # Set password securely using create_user
+        )
+        user.is_staff = True
+        user.is_active = False
+        user.save()
+
+        # Create the Employee profile
+        employee = Employees.objects.create(
+            user=user,
+            **validated_data
+        )
+
+        return employee
 
 
 class EmployeeLoginSerializer(serializers.Serializer):
