@@ -1,3 +1,5 @@
+from datetime import timedelta
+from django.utils import timezone
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from myapp.models import *
@@ -12,6 +14,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.views import APIView
+from django.conf import settings
+import uuid
 
 
 # Create your views here.
@@ -23,22 +27,37 @@ class GenerateTemporaryTokenView(APIView):
 
         if not email:
             return Response({'detail': 'Email is required.'}, status= status.HTTP_400_BAD_REQUEST)
-        token = TemporaryToken.objects.create(email=email)
-        send_mail(
-            'Your Signup Token',
-            f'Use this token to signup: {token.token}',
-            [Employees.email],
-            [email],
-            fail_silently=False,
-        )
-        return Response({'message': 'Token sent to email.'}, status= status.HTTP_200_OK)
+        if User.objects.filter(email=email).exists():
+            return Response({'detail': 'Email is already registered.'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            # Create a temporary token
+            token = TemporaryToken.objects.create(
+                email=email,
+                expires_at=timezone.now()+ timedelta(hours=1)
+            )
+            send_mail(
+                'Your Signup Token',
+                f'Use this token to signup: {token.token}',
+                settings.EMAIL_HOST_USER,
+                [email],
+                fail_silently=False,
+            )
+            return Response({'message': 'Token sent to email.'}, status= status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'detail': str(e)}, status= status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
-class ValidateTokenView(GenericAPIView):
+class ValidateTokenView(APIView):
     """Validates Token"""
-    def get(self, request, token):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+        token = request.data.get("token")
+        if not email or not token:
+            return Response({'detail': 'Token and email are required.'}, status= status.HTTP_400_BAD_REQUEST)
         try:
-            temp_token = TemporaryToken.objects.get(token=token)
+            temp_token = TemporaryToken.objects.get(token=token, email=email) # query token from database
             if temp_token.is_valid():
                 return Response({'valid': True}, status= status.HTTP_200_OK)
             else:
@@ -69,10 +88,11 @@ class EmployeeRegistrationAPIView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         token = request.data.get('token')
-        if not token:
-            return Response({'detail': 'Token required.'}, status=status.HTTP_400_BAD_REQUEST)
+        email = request.data.get('email')
+        if not token or not email:
+            return Response({'detail': 'Email and Token required.'}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            temp_token = TemporaryToken.objects.get(token=token)
+            temp_token = TemporaryToken.objects.get(token=token, email=email)
 
             if not temp_token.is_valid():
                 return Response({'detail': 'Token has expired.'}, status= status.HTTP_400_BAD_REQUEST)
@@ -82,11 +102,12 @@ class EmployeeRegistrationAPIView(GenericAPIView):
             user = serializer.save()
 
             # Generate JWT tokens for the new user
-            token = RefreshToken.for_user(user)
+            refresh_token = RefreshToken.for_user(user)
             data = serializer.data
-            data['tokens'] = {"refresh":str(token),
-                          "access": str(token.access_token)}
+            data['tokens'] = {"refresh":str(refresh_token),
+                          "access": str(refresh_token.access_token)}
             temp_token.delete()
+            
             return Response(data, status= status.HTTP_201_CREATED)
         
         except TemporaryToken.DoesNotExist:
