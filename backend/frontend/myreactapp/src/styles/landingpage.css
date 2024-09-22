@@ -1,0 +1,30 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color:rgb(86, 86, 108);
+    background-image: url(/img/Landingpage.jpeg); filter: brightness(90%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; /* If you want vertical alignment */
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    color:white;
+    font-size:larger;
+}
+
+.body .title {
+    font-size: 2rem;
+    color: whitesmoke;
+    margin-bottom: 20px;
+}

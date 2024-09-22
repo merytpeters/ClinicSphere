@@ -1,0 +1,52 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.navbar {
+    background-color: rgb(3, 3, 8);
+    width: 100%;
+    color: white;
+    padding: 10px 20px;
+    position: fixed; /* Stick it to the top */
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Ensure it stays above other content */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+
+
+.navbar-left .logo{
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.navbar-left .logo:hover {
+    color:rgb(50, 47, 19);
+}
+
+.navbar-center .nav-links {
+    list-style-type: none;
+    display: flex;
+    gap: 20px;
+    color: beige;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 10px;
+    transition: color 0.3s
+}
+
+.nav-links a:hover {
+    color: #aaa;
+}
