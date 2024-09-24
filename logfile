@@ -1,8 +1,0 @@
-2024-09-12 10:43:39.307 WAT [63527] LOG:  starting PostgreSQL 14.13 (Homebrew) on x86_64-apple-darwin21.6.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.202), 64-bit
-2024-09-12 10:43:39.313 WAT [63527] LOG:  could not bind IPv4 address "127.0.0.1": Address already in use
-2024-09-12 10:43:39.313 WAT [63527] HINT:  Is another postmaster already running on port 5432? If not, wait a few seconds and retry.
-2024-09-12 10:43:39.313 WAT [63527] LOG:  could not bind IPv6 address "::1": Address already in use
-2024-09-12 10:43:39.313 WAT [63527] HINT:  Is another postmaster already running on port 5432? If not, wait a few seconds and retry.
-2024-09-12 10:43:39.313 WAT [63527] WARNING:  could not create listen socket for "localhost"
-2024-09-12 10:43:39.313 WAT [63527] FATAL:  could not create any TCP/IP sockets
-2024-09-12 10:43:39.315 WAT [63527] LOG:  database system is shut down
