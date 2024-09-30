@@ -37,6 +37,9 @@ To start the EMR server:
 
 ## Configuration
 
+## Demo
+https://drive.google.com/file/d/1H6iIOcIpoinzYWeYvMDZAbOPKZHJF5UG/view?usp=drive_link
+
 ## Best Practices
 
 ## Contributiong
@@ -45,4 +48,5 @@ To start the EMR server:
 
 ## Contact
 **Email: merytpeters@gmail.com**
+
 **Github: merytpeters**
