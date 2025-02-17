@@ -4,9 +4,9 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     path('generate-token/', GenerateTemporaryTokenView.as_view(), name='generate-token'),
-    path('validate-token/<uuid:token>/', ValidateTokenView.as_view(), name='validate-token'),
+    path('validate-token/', ValidateTokenView.as_view(), name='validate-token'),
     path('registration/', EmployeeRegistrationAPIView.as_view(), name='register-employee'),
-    path('login/', EmployeeLoginAPIView.as_view(), name='logout-user'),
+    path('login/', EmployeeLoginAPIView.as_view(), name='login-user'),
     path('logout/', EmployeeLogoutAPIView.as_view(), name='logout-user'),
     path('patients/', PatientList.as_view(), name='patients-files'),
     path('patientfile/<int:pk>/', PatientDetails.as_view(), name='patient'),

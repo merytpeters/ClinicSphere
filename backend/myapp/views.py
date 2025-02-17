@@ -99,7 +99,9 @@ class EmployeeRegistrationAPIView(GenericAPIView):
             
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            user = serializer.save()
+            employee = serializer.save()
+
+            user = employee.user
 
             # Generate JWT tokens for the new user
             refresh_token = RefreshToken.for_user(user)

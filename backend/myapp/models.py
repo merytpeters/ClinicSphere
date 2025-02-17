@@ -99,7 +99,7 @@ class Employees(models.Model):
         return not self.is_staff
 
     def get_full_name(self):
-        return f"(self.EmployeeName)"
+        return f"{self.EmployeeName}"
 
     def get_short_name(self):
         return self.username

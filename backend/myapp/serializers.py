@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth.password_validation import validate_password
 from myapp.models import *
 from rest_framework import serializers
 
@@ -26,7 +27,7 @@ class EmployeeRegistrationSerializer(serializers.ModelSerializer):
         password = attrs.get('password1', '')
         if len(password) < 8:
             raise serializers.ValidationError('Password must be at least 8 characters!')
-            
+        validate_password(password)
         return attrs
 
     def create(self, validated_data):
