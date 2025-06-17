@@ -114,7 +114,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'frontend', 'myreactapp', 'dist')],
+        'DIRS': [os.path.join(BASE_DIR, 'frontend', 'myreactapp')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
