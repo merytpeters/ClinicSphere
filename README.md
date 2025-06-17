@@ -29,7 +29,7 @@ The **Electronic Medical Record (EMR)** system is a digital version of a patient
 ## Usage
 ### Starting the EMR Server
 To start the EMR server:
-    ```bash
+    ```
     python manage.py runserver
     ```
 
