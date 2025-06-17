@@ -40,6 +40,14 @@ append endpoints to 👇🏼
 http://localhost:8000/api/
 Example http://localhost:8000/api/prescriptions/
 
+or API Live Links:
+   https://clinicsphere.onrender.com/api/ 
+   https://clinicsphere.onrender.com/api/registration/
+   https://clinicsphere.onrender.com/api/prescriptions/
+   https://clinicsphere.onrender.com/api/patients/
+   https://clinicsphere.onrender.com/api/appointments/
+
+
 ## API Documentation
 
 ## Configuration
