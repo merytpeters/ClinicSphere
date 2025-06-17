@@ -1,0 +1,60 @@
+/* Sidebar container */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    padding-top: 20px;
+    transition: width 0.5s ease, padding 0.5s ease;
+    color: white;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers text and links */
+}
+
+/* Sidebar closed state */
+.sidebar.closed {
+    width: 0;
+    padding: 0;
+}
+
+/* Sidebar navigation links */
+.sidebar nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.sidebar nav ul li {
+    padding: 12px 20px;
+    text-align: center; /* Centers text */
+}
+
+.sidebar nav ul li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+/* Add spacing & hover effect */
+.sidebar nav ul li a:hover {
+    background-color: #575757;
+    color: #ffcc00;
+    transform: translateX(5px); /* Slight move effect */
+}
+
+/* Sidebar text styling */
+.sidebar-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 50px; /* Adds spacing */
+    text-align: center;
+    color: #ffcc00;
+}

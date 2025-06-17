@@ -1,0 +1,54 @@
+.form-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two equal columns */
+    gap: 15px;
+    width: 70%; /* Increase width */
+    max-width: 900px; /* Allow more space */
+    margin: 30px auto;
+}
+
+/* Ensure form inputs are aligned properly */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* Make labels consistent */
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Inputs and selects should fill their container */
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.submit-btn-container {
+    display: flex;
+    justify-content: center; /* Horizontally center the button */
+    align-items: center; /* Vertically center (if container height is sufficient) */
+    width: auto; /* Let it take the space it needs */
+    margin-top: 20px; /* Optional: Add margin for spacing */
+}
+
+
+button {
+    width: auto; /* Button width based on content */
+    padding: 10px 20px; /* Optional: Add padding to make button more appealing */
+}
+
+
+/* RESPONSIVENESS: Switch to single-column on smaller screens */
+@media (max-width: 768px) {
+    .form-container {
+        grid-template-columns: 1fr; /* Single column */
+        width: 60%;
+    }
+}
+
+
