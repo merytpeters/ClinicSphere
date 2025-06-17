@@ -29,9 +29,16 @@ The **Electronic Medical Record (EMR)** system is a digital version of a patient
 ## Usage
 ### Starting the EMR Server
 To start the EMR server:
-    npm start
+    ```bash
+    python manage.py runserver
+    ```
 
 ### API Endpoints
+Complete urls can be found in backend/backend/myapp/urls.py
+and in backend/backend/patientportal/urls.py
+append endpoints to 👇🏼
+http://localhost:8000/api/
+Example http://localhost:8000/api/prescriptions/
 
 ## API Documentation
 
